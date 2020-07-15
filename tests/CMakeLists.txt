@@ -1,0 +1,3 @@
+add_executable(test_ber_parser test_ber_parser.c)
+target_link_libraries(test_ber_parser ber)
+add_test(test_ber_parser test_ber_parser)
