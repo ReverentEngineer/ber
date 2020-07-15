@@ -1,0 +1,46 @@
+=pod
+
+=head1 NAME
+
+ber_parser_new, ber_parser_set_input, ber_parser_parse, ber_parser_free
+
+=head1 SYNOPSIS
+
+  #include <ber.h>
+ 
+  struct ber_parser* ber_parser_new(void);
+
+  void ber_parser_set_input(struct ber_parser* parser, FILE* file);
+  
+  int ber_parser_parse(struct ber_element* element, struct ber_parser* parser);
+
+  void ber_parse_free(struct ber_parser* parser);
+
+=head1 DESCRIPTION
+
+ber_parser_new() sets up a new B<ber_parser>.
+
+ber_parser_set_input() associates the parser with an input. Once you are done
+with an input, you can switch to a new input without losing state.
+
+ber_parser_parse() reads data from the current input, attempts to parse a
+single BER-encoded element, and fills the provided B<ber_element> with the
+parsed fields.
+
+ber_parser_free() frees B<ber_parser> and its underlying components.
+
+=head1 RETURN VALUES
+
+ber_parser_new() returns a new rdg instance.
+
+ber_parser_parse() returns 0 on success and -1 on failure (setting errno appropriately)
+
+=head1 BUGS
+
+Bugs can be reported here: https://github.com/ReverentEngineer/ber/issues
+
+=head1 AUTHORS
+
+Jeff Caffrey-Hill <jeff@reverentengineer.com>
+
+=cut
