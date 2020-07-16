@@ -22,3 +22,10 @@ if (UNIX)
     add_custom_target(man ALL DEPENDS ber_parser_parse.3)
   endif(POD2MAN_EXECUTABLE)
 endif(UNIX)
+
+find_program(SPHINX_EXECUTABLE sphinx-build)
+if(SPHINX_EXECUTABLE)
+  message(STATUS "Found sphinx-build. Documentation enabled.")
+
+  add_custom_target(docs COMMAND ${SPHINX_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/sphinx html)
+endif(SPHINX_EXECUTABLE)
