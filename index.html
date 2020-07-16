@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Encoding Rules (BER) &#8212; BER  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/style.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="basic-encoding-rules-ber">
+<h1>Basic Encoding Rules (BER)<a class="headerlink" href="#basic-encoding-rules-ber" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to the BER library documentation. This is a simple library for parsing
+data encoed using the Basic Encoding Rules (BER) of ASN.1. Since the Distinguished
+Encoding Rules (DER) is a restricted subset of BER, it should also work on
+DER-encoded data.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>This is a basic example of how to use it:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">FILE</span><span class="o">*</span> <span class="n">fp</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&quot;myfile.ber&quot;</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">);</span>
+<span class="k">struct</span> <span class="n">ber_element</span> <span class="n">element</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">ber_event</span> <span class="n">event</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">ber_parser</span><span class="o">*</span> <span class="n">parser</span> <span class="o">=</span> <span class="n">ber_parser_new</span><span class="p">();</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="n">ber_parser_parser</span><span class="p">(</span><span class="o">&amp;</span><span class="n">event</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">element</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">event</span> <span class="o">!=</span> <span class="n">BER_NO_EVENT</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Tag: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">element</span><span class="p">.</span><span class="n">tag</span><span class="p">);</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Data: &quot;</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">element</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%02x&quot;</span><span class="p">,</span> <span class="n">element</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="c enum">
+<dt id="c.ber_event">
+<em class="property">enum </em><code class="sig-name descname">ber_event</code><a class="headerlink" href="#c.ber_event" title="Permalink to this definition">¶</a><br /></dt>
+<dd><dl class="c enumerator">
+<dt id="c.ber_event.BER_NO_EVENT">
+<em class="property">enumerator </em><code class="sig-name descname">BER_NO_EVENT</code><a class="headerlink" href="#c.ber_event.BER_NO_EVENT" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ber_event.BER_PRIMITIVE_EVENT">
+<em class="property">enumerator </em><code class="sig-name descname">BER_PRIMITIVE_EVENT</code><a class="headerlink" href="#c.ber_event.BER_PRIMITIVE_EVENT" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ber_event.BER_CONSTRUCTED_EVENT">
+<em class="property">enumerator </em><code class="sig-name descname">BER_CONSTRUCTED_EVENT</code><a class="headerlink" href="#c.ber_event.BER_CONSTRUCTED_EVENT" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ber_event.BER_EOC_EVENT">
+<em class="property">enumerator </em><code class="sig-name descname">BER_EOC_EVENT</code><a class="headerlink" href="#c.ber_event.BER_EOC_EVENT" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt id="c.ber_tag_class">
+<em class="property">enum </em><code class="sig-name descname">ber_tag_class</code><a class="headerlink" href="#c.ber_tag_class" title="Permalink to this definition">¶</a><br /></dt>
+<dd><dl class="c enumerator">
+<dt id="c.ber_tag_class.BER_TAG_CLASS_UNIVERSAL">
+<em class="property">enumerator </em><code class="sig-name descname">BER_TAG_CLASS_UNIVERSAL</code><a class="headerlink" href="#c.ber_tag_class.BER_TAG_CLASS_UNIVERSAL" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ber_tag_class.BER_TAG_CLASS_APPLICATION">
+<em class="property">enumerator </em><code class="sig-name descname">BER_TAG_CLASS_APPLICATION</code><a class="headerlink" href="#c.ber_tag_class.BER_TAG_CLASS_APPLICATION" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ber_tag_class.BER_TAG_CLASS_CONTEXT_SPECIFIC">
+<em class="property">enumerator </em><code class="sig-name descname">BER_TAG_CLASS_CONTEXT_SPECIFIC</code><a class="headerlink" href="#c.ber_tag_class.BER_TAG_CLASS_CONTEXT_SPECIFIC" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ber_tag_class.BER_TAG_CLASS_PRIVATE">
+<em class="property">enumerator </em><code class="sig-name descname">BER_TAG_CLASS_PRIVATE</code><a class="headerlink" href="#c.ber_tag_class.BER_TAG_CLASS_PRIVATE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="c struct">
+<dt id="c.ber_element">
+<em class="property">struct </em><code class="sig-name descname">ber_element</code><a class="headerlink" href="#c.ber_element" title="Permalink to this definition">¶</a><br /></dt>
+<dd><dl class="c var">
+<dt id="c.ber_element.tag_class">
+<em class="property">enum</em> tag_class <code class="sig-name descname">tag_class</code><a class="headerlink" href="#c.ber_element.tag_class" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The class of the tag</p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.ber_element.constructed">
+int <code class="sig-name descname">constructed</code><a class="headerlink" href="#c.ber_element.constructed" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Whether the element is constructed</p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.ber_element.tag">
+size_t <code class="sig-name descname">tag</code><a class="headerlink" href="#c.ber_element.tag" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The tag of the element</p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.ber_element.definite">
+int <code class="sig-name descname">definite</code><a class="headerlink" href="#c.ber_element.definite" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Whether the element has a definite (has a pre-defined length)</p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.ber_element.length">
+size_t <code class="sig-name descname">length</code><a class="headerlink" href="#c.ber_element.length" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The length of the value</p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.ber_element.value">
+char *<code class="sig-name descname">value</code><a class="headerlink" href="#c.ber_element.value" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The value encoded</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c struct">
+<dt id="c.ber_parser">
+<em class="property">struct </em><code class="sig-name descname">ber_parser</code><a class="headerlink" href="#c.ber_parser" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A BER parser object that holds the state of the parsing.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.ber_get_version">
+<em class="property">const</em> char *<code class="sig-name descname">ber_get_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ber_get_version" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the version string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A pointer to the static version string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.ber_parser_new">
+<em class="property">struct</em> <a class="reference internal" href="#c.ber_parser" title="ber_parser">ber_parser</a> *<code class="sig-name descname">ber_parser_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ber_parser_new" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a new BER parser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An instance of <a class="reference internal" href="#c.ber_parser" title="ber_parser"><code class="xref c c-struct docutils literal notranslate"><span class="pre">ber_parser</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.ber_parser_parse">
+int <code class="sig-name descname">ber_parser_parse</code><span class="sig-paren">(</span><em class="property">enum</em> <a class="reference internal" href="#c.ber_event" title="ber_event">ber_event</a> *<em>event</em>, <a class="reference internal" href="#c.ber_element" title="ber_element">ber_element</a> *<em>element</em>, <em class="property">struct</em> <a class="reference internal" href="#c.ber_parser" title="ber_parser">ber_parser</a> *<em>parser</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ber_parser_parse" title="Permalink to this definition">¶</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>0 on success, or -1 on error</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is not thread-safe.</p>
+</div>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.ber_parser_free">
+void <code class="sig-name descname">ber_parser_free</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.ber_parser" title="ber_parser">ber_parser</a> *<em>parser</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ber_parser_free" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Frees the parsero bject</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jeff Caffrey-Hill.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
