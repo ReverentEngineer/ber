@@ -87,6 +87,21 @@ struct ber_element {
 
 };
 
+enum ber_event {
+  /** No event */
+  BER_NO_EVENT,
+
+  /** End of data event */
+  BER_EOF_EVENT,
+
+  /** Primitive element event */
+  BER_PRIMITIVE_EVENT,
+
+  /** Constructed element events */
+  BER_CONSTRUCTED_EVENT,
+  BER_EOC_EVENT,
+};
+
 /**
  * @brief Allocates a new parser
  *
@@ -105,18 +120,19 @@ void ber_parser_set_input(struct ber_parser* parser, FILE* file);
 /**
  * @brief Parse the input stream
  *
- * @param event[out] event An event object to be populated
+ * @param event[out] event Event to be populated
+ * @param event[out] element Element to be populated
  * @param parser[in,out] parser Parser to use
  *
  * @retval  0 success
  * @retval -1 error
  */
-int ber_parser_parse(struct ber_element* element, struct ber_parser* parser);
+int ber_parser_parse(enum ber_event* event, struct ber_element* element, struct ber_parser* parser);
 
 /**
  * @brief Frees the parser
  *
- * @param [in,out] parser Parse to free
+ * @param[in,out] parser Parse to free
  */
 void ber_parser_free(struct ber_parser* parser);
 

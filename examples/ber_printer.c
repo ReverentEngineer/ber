@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
   struct ber_parser* parser = NULL;
   FILE* input = NULL;
   struct ber_element element;
+  enum ber_event event;
   int res = 0;
   char* hex = NULL;
   if (argc > 2) {
@@ -45,7 +46,7 @@ int main(int argc, char* argv[]) {
   parser = ber_parser_new();
   ber_parser_set_input(parser, input);
 
-  while ((res = ber_parser_parse(&element, parser)) == 0 || errno == EAGAIN) {
+  while ((res = ber_parser_parse(&event, &element, parser)) == 0 || event != BER_NO_EVENT) {
     if (res == 0) {
       printf("Class: %s\n", tag_class_text[element.tag_class]);
       printf("P/C: %s\n", constructed_text[element.constructed]);
