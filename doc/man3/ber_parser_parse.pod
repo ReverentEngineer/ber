@@ -12,7 +12,7 @@ ber_parser_new, ber_parser_set_input, ber_parser_parse, ber_parser_free
 
   void ber_parser_set_input(struct ber_parser* parser, FILE* file);
   
-  int ber_parser_parse(struct ber_element* element, struct ber_parser* parser);
+  int ber_parser_parse(enum ber_event* event, struct ber_element* element, struct ber_parser* parser);
 
   void ber_parse_free(struct ber_parser* parser);
 
@@ -24,10 +24,35 @@ ber_parser_set_input() associates the parser with an input. Once you are done
 with an input, you can switch to a new input without losing state.
 
 ber_parser_parse() reads data from the current input, attempts to parse a
-single BER-encoded element, and fills the provided B<ber_element> with the
-parsed fields.
+single BER-encoded element, and fills the provided B<element> with the
+parsed fields. The B<event> is assigned an appropriate event enumeration.
 
-ber_parser_free() frees B<ber_parser> and its underlying components.
+The following are descriptions of the event type:
+
+=over 4
+
+=item B<BER_NO_EVENT>
+
+No event was parsed. If no other error returned, this is likely beecause there
+is not any data left to parse.
+
+=item B<BER_PRIMITIVE_EVENT>
+
+An encoded primitive element was parsed.
+
+=item B<BER_CONSTRUCTED_EVENT>
+
+An encoded constructed element was parsed. All elements following this event, 
+until a matching BER_EOC_EVENT is found, are subelements.
+
+=item B<BER_EOC_EVENT>
+
+Either an encoded end-of-content element was found or the end of a definite
+constructed element was reached.
+
+=back
+
+ber_parser_free() frees B<parser> and its underlying components.
 
 =head1 RETURN VALUES
 
@@ -38,6 +63,26 @@ ber_parser_parse() returns 0 on success and -1 on failure (setting errno appropr
 =head1 BUGS
 
 Bugs can be reported here: https://github.com/ReverentEngineer/ber/issues
+
+=head1 EXAMPLES
+
+Parsing a file with BER encoding:
+
+  FILE* fp = fopen("myfile.ber", "rb");
+  struct ber_element element;
+  struct ber_event event;
+  struct ber_parser* parser = ber_parser_new();
+  
+  while (ber_parser_parser(&event, &element, parser) == 0 && event != BER_NO_EVENT) {
+    printf("Tag: %d\n", element.tag);
+  
+    printf("Data: ");
+    for (int i = 0; i < element.length; i++) {
+      printf("%02x", element.data[i]);
+    }
+    printf("\n");
+  }
+
 
 =head1 AUTHORS
 
