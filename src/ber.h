@@ -91,9 +91,6 @@ enum ber_event {
   /** No event */
   BER_NO_EVENT,
 
-  /** End of data event */
-  BER_EOF_EVENT,
-
   /** Primitive element event */
   BER_PRIMITIVE_EVENT,
 
